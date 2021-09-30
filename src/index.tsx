@@ -6,6 +6,7 @@ import { createClient, defaultExchanges, Provider } from 'urql';
 import App from './App';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
+import { SoilAnalysis, SoilAnalysisUpdateInput } from './types';
 
 const url = process.env.REACT_APP_URL;
 
@@ -13,9 +14,28 @@ if (!url) {
   throw new Error('No URL provided.');
 }
 
+interface Options {
+  optimistic: {
+    updateSoilAnalysis: (variables: {
+      soilAnalysisUpdateInput: SoilAnalysisUpdateInput;
+    }) => SoilAnalysis;
+  };
+}
+
 const client = createClient({
   url,
-  exchanges: [devtoolsExchange, offlineExchange({}), ...defaultExchanges],
+  exchanges: [
+    devtoolsExchange,
+    offlineExchange<Options>({
+      optimistic: {
+        updateSoilAnalysis: ({ soilAnalysisUpdateInput }) => ({
+          __typename: 'SoilAnalysis',
+          ...soilAnalysisUpdateInput,
+        }),
+      },
+    }),
+    ...defaultExchanges,
+  ],
 });
 
 ReactDOM.render(
