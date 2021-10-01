@@ -1,4 +1,3 @@
-import { devtoolsExchange } from '@urql/devtools';
 import { offlineExchange } from '@urql/exchange-graphcache';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -15,7 +14,7 @@ if (!url) {
 
 const client = createClient({
   url,
-  exchanges: [devtoolsExchange, offlineExchange({}), ...defaultExchanges],
+  exchanges: [offlineExchange({}) as any, ...defaultExchanges],
 });
 
 ReactDOM.render(
